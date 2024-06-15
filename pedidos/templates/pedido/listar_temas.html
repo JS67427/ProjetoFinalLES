@@ -1,0 +1,67 @@
+{% extends 'app.html' %}
+{% block title %}- Listar Temas{% endblock title %}
+{% block content %}
+
+<div class="columns">
+    <div class="column">
+        <nav aria-label="breadcrumbs" class="breadcrumb">
+            <ul>
+                <li><a href="/">Início</a></li>
+                <li class="is-active"><a href="">Listagem de Temas</a></li>
+            </ul>
+        </nav>
+
+        <h1 class="title">Listagem de Temas</h1>
+
+        <!-- Formulário de Busca -->
+        <form method="GET" action="{% url 'pedidos:listar_temas' %}" class="mb-4">
+            <div class="field has-addons">
+                <div class="control">
+                    <input class="input" type="text" name="search" placeholder="Buscar tema" value="{{ request.GET.search }}">
+                </div>
+                <div class="control">
+                    <button class="button is-info" type="submit">Pesquisar</button>
+                </div>
+            </div>
+        </form>
+
+        <div class="buttons">
+            <a href="{% url 'pedidos:criar_tema' %}" class="button is-primary">
+                <span class="icon">
+                    <i class="mdi mdi-plus"></i>
+                </span>
+                <span>Adicionar Novo Tema</span>
+            </a>
+        </div>
+
+        {% if temas %}
+        <table class="table is-hoverable is-fullwidth custom-table">
+            <thead>
+                <tr>
+                    <th>Tema</th> 
+                </tr>
+            </thead>
+            <tbody>
+                {% for tema in temas %}
+                <tr>
+                    <td>{{ tema.tema }}</td>
+                    <td>
+                        <div class="buttons">
+                            <a href="{% url 'pedidos:eliminar_tema' tema.id %}" class="button is-small is-danger">
+                                Eliminar
+                            </a>
+                            <a href="{% url 'pedidos:editar_tema' tema.id %}" class="button is-small is-primary">
+                                Editar
+                            </a>
+                        </div> 
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Não há Temas disponíveis.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

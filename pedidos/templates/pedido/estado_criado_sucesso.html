@@ -1,0 +1,15 @@
+{% extends 'app.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="notification is-success" style="font-size: 1.5rem; text-align: center; margin-top: 20vh;">
+        Estado criado com sucesso. Você será redirecionado em breve.
+    </div>
+</div>
+
+<script type="text/javascript">
+    setTimeout(function() {
+        window.location.href = "{% url 'pedidos:listar_estados' %}";
+    }, 2000);  // 2000 milissegundos = 2 segundos
+</script>
+{% endblock content %}

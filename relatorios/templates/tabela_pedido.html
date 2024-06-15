@@ -1,0 +1,119 @@
+{% extends 'app.html' %}
+{% load static %}
+
+{% block title %} - Relatório de Pedidos {% endblock title %}
+
+{% block content %}
+<div class="columns">
+    <div class="column is-3">
+        <div class="menu">
+            <div class="menu-label">
+                Filtros de Pedido:
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <ul class="menu-list">
+                    <li>
+                        <div class="field">
+                            <label>Intervalo de Data:</label>
+                        </div>
+                        <ul>
+                            <div class="field" style="padding-left: 1rem;">
+                                <label>
+                                    Data de Início: <input type="date" name="data_de_inicio" class="input">
+                                </label>
+                            </div>
+                            <div class="field" style="padding-left: 1rem;">
+                                <label>
+                                    Data de Fim: <input type="date" name="data_de_fim" class="input">
+                                </label>
+                            </div>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="field is-grouped">
+                    <p class="control is-expanded">
+                        <button class="button is-primary is-fullwidth" type="submit">
+                            <span class="icon">
+                                <i class="mdi mdi-magnify"></i>
+                            </span>
+                            <span>Pesquisar</span>
+                        </button>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="column">
+        <nav aria-label="breadcrumbs" class="breadcrumb">
+            <ul>
+                <li><a href="/">Início</a></li>
+                <li class="is-active"><a href="#" aria-current="page">Relatório de Pedidos</a></li>
+            </ul>
+        </nav>
+        
+        <!-- Início da Tabela de Análise por Tipo de Pedido -->
+        <table class="table is-striped is-narrow is-hoverable is-fullwidth" style="margin-top: 2rem;">
+            <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Pedido em Espera</th>
+                    <th>Pedido em Análise</th>
+                    <th>Pedidos Aceites</th>
+                    <th>Pedidos Rejeitados</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Horário</td>
+                    <td>{{ pedidos_espera_horario }}</td>
+                    <td>{{ pedidos_analise_horario }}</td>
+                    <td>{{ pedidos_aceites_horario }}</td>
+                    <td>{{ pedidos_rejeitados_horario }}</td>
+                </tr>
+                <tr>
+                    <td>Outros</td>
+                    <td>{{ pedidos_espera_outros }}</td>
+                    <td>{{ pedidos_analise_outros }}</td>
+                    <td>{{ pedidos_aceites_outros }}</td>
+                    <td>{{ pedidos_rejeitados_outros }}</td>
+                </tr>
+                <tr>
+                    <td>Sala</td>
+                    <td>{{ pedidos_espera_sala }}</td>
+                    <td>{{ pedidos_analise_sala }}</td>
+                    <td>{{ pedidos_aceites_sala }}</td>
+                    <td>{{ pedidos_rejeitados_sala }}</td>
+                </tr>
+                <tr>
+                    <td>UC</td>
+                    <td>{{ pedidos_espera_uc }}</td>
+                    <td>{{ pedidos_analise_uc }}</td>
+                    <td>{{ pedidos_aceites_uc }}</td>
+                    <td>{{ pedidos_rejeitados_uc }}</td>
+                </tr>
+                <tr>
+                    <td>Parecer</td>
+                    <td>{{ pedidos_espera_parecer }}</td>
+                    <td>{{ pedidos_analise_parecer }}</td>
+                    <td>{{ pedidos_aceites_parecer }}</td>
+                    <td>{{ pedidos_rejeitados_parecer }}</td>
+                </tr>
+                <tr>
+                    <td>Aluno</td>
+                    <td>{{ pedidos_espera_aluno }}</td>
+                    <td>{{ pedidos_analise_aluno }}</td>
+                    <td>{{ pedidos_aceites_aluno }}</td>
+                    <td>{{ pedidos_rejeitados_aluno }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- Fim da Tabela -->
+        
+        <div style="text-align: center; margin-top: 2rem;">
+            <button class="button is-link" onclick="window.print()">Exportar para PDF</button>
+        </div>
+    </div>
+</div>
+{% endblock content %}

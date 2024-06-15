@@ -1,0 +1,74 @@
+{% extends 'app.html' %}
+{% block title %}- Listar Estados do Questionário{% endblock title %}
+
+{% block content %}
+<div class="columns">
+    
+    <div class="column">
+        <h1 class="title">Listagem de Estados do Questionário</h1>
+
+        <form method="GET">
+            <div class="field has-addons">
+                <div class="control is-expanded">
+                    <input class="input" type="text" name="q" placeholder="Pesquisar estado..." value="{{ request.GET.q }}">
+                </div>
+                <div class="control">
+                    <button type="submit" class="button is-info">
+                        <span class="icon">
+                            <i class="mdi mdi-magnify"></i>
+                        </span>
+                        <span>Pesquisar</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="buttons">
+            <a href="{% url 'pedidos:criar_estado_questionario' %}" class="button is-primary">
+                <span class="icon">
+                    <i class="mdi mdi-plus"></i>
+                </span>
+                <span>Adicionar Novo Estado</span>
+            </a>
+        </div>
+
+        {% if estados %}
+        <table class="table is-hoverable is-fullwidth">
+            <thead>
+                <tr>
+                    <th>Estado</th>
+                    <th>Descrição</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for estado in estados %}
+                <tr>
+                    <td>{{ estado.estado }}</td>
+                    <td>{{ estado.descricao }}</td>
+                    <td>
+                        <div class="buttons">
+                            <!-- Botão para editar o estado -->
+                            <a href="{% url 'pedidos:editar_estado_questionario' estado.id %}" class="button is-small is-info" title="Editar">
+                                <span class="icon tooltip">
+                                    <i class="mdi mdi-pencil"></i>
+                                </span>
+                            </a>
+                            <!-- Botão para eliminar o estado -->
+                            <a href="{% url 'pedidos:eliminar_estado_questionario' estado.id %}" class="button is-small is-danger" title="Eliminar">
+                                <span class="icon tooltip">
+                                    <i class="mdi mdi-delete"></i>
+                                </span>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="notification is-warning">Nenhum estado do questionário encontrado.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

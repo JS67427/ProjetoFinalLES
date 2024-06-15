@@ -1,0 +1,19 @@
+{% extends 'app.html' %}
+{% block title %}Eliminar Estado do Pedido{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <form method="post">
+        {% csrf_token %}
+        <div style="margin-top:8%; text-align:center; position:center;">
+            <h2 class="title has-text-grey is-uppercase" style="font-size: 2.0rem;">
+                Tem certeza que deseja eliminar o estado "{{ estado.estado }}”?
+            </h2>
+            <button type="submit" name="confirmar" class="button is-success is-outlined" style="margin-right:5%">Sim, eliminar</button>
+            <a href="{% url 'pedidos:listar_estados' %}" class="button is-outlined">Não, cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock content %}
+
+

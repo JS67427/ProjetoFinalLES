@@ -1,0 +1,70 @@
+{% extends 'app.html' %}
+
+{% load static %}
+
+{% block title %}- Relatorios{% endblock title %}
+
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+<div style="padding: 1rem 2vw 0px;">
+  <hr>
+  <h2 class="title has-text-grey is-uppercase" style="font-size: 2.0rem;">
+      Relatorios
+  </h2>
+  <div>&nbsp;</div>
+  <div>&nbsp;</div>
+  <div>&nbsp;</div>
+<table>
+    <thead>
+
+    </thead>
+    <tbody>
+        {% if user.groups.all.0.name == "Funcionario" %}
+        <tr>
+            <th style="text-align: center;">
+                <h2 class="title has-text-grey is-uppercase" style="font-size: 1.5rem;">Relatorio de Pedidos </h2>
+            </th>
+            <th>
+               
+                <a href="{% url 'relatorios:tabela-pedido'%}">
+                <button type="button" value="Voltar" class="button is-success" style="margin-left:50%" >Consultar</button>
+            </a>
+            </th>
+        </tr>
+        <tr>
+            <th style="text-align: center;">
+                &nbsp;
+            </th>
+            <th>
+               
+            </th>
+        </tr>
+        <tr>
+            <th style="text-align: center;">
+            
+                <h2 class="title has-text-grey is-uppercase" style="font-size: 1.5rem;">Relatorio de Docentes </h2>
+            </th>
+            <th>
+                <a href="{% url 'relatorios:relatorio-docente'%}">
+                    <button type="button" value="Voltar" class="button is-success" style="margin-left:50%" >Consultar</button>
+                </a>
+            </th>            
+
+        
+        </tr>
+        {% endif %}
+    </tbody>
+  
+    
+</table>
+    
+  
+</form>
+
+{% endblock content %}
+
+{% block scripts %}
+
+  
+{% endblock scripts %}

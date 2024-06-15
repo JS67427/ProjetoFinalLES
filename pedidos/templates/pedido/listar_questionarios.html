@@ -1,0 +1,122 @@
+{% extends 'app.html' %}
+{% block title %}- Listar Questionários{% endblock title %}
+{% block content %}
+
+<div class="columns">
+    <div class="column is-3">
+        <div class="menu">
+            <div class="menu-label">
+                Filtros Questionários:
+            </div>
+            <form method="get">
+                <div class="field">
+                    <label class="label">Ano Letivo:</label>
+                    <div class="control">
+                        <div class="select is-fullwidth">
+                            <select name="ano_letivo">
+                                <option value="">Selecione o Ano Letivo</option>
+                                {% for ano in anos_letivos %}
+                                    <option value="{{ ano.id }}" {% if ano.id == ano_letivo_selecionado %}selected{% endif %}>{{ ano.ano_letivo }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="button is-primary">Filtrar</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="column">
+        <nav aria-label="breadcrumbs" class="breadcrumb">
+            <ul>
+                <li><a href="/">Início</a></li>
+                <li class="is-active"><a href="">Listagem de Questionários</a></li>
+            </ul>
+        </nav>
+
+        <form method="GET">
+            <div class="field has-addons">
+                <div class="control is-expanded">
+                    <input class="input" type="text" name="assunto" placeholder="Pesquisar por assunto..." value="{{ request.GET.assunto }}">
+                </div>
+                <div class="control">
+                    <button type="submit" class="button is-info">
+                        <span class="icon">
+                            <i class="mdi mdi-magnify"></i>
+                        </span>
+                        <span>Pesquisar</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <h1 class="title">Listagem de Questionários</h1>
+
+        {% if questionarios %}
+        <table class="table is-hoverable is-fullwidth custom-table">
+            <thead>
+                <tr>
+                    <th>Assunto</th>
+                    <th>Data Limite</th>
+                    <th>Estado</th>
+                    <th>Ações</th> 
+                </tr>
+            </thead>
+            <tbody>
+                {% for questionario in questionarios %}
+                <tr>
+                    <td>{{ questionario.assunto }}</td>
+                    <td>{{ questionario.data_limite }}</td>
+                    <td>{{ questionario.estado.estado }}</td>
+                    <td>
+                        <div class="buttons">
+                            <a href="/questionario/{{ questionario.id }}" class="button is-small is-info" title="Detalhes">
+                                <span class="icon tooltip">
+                                    <i class="mdi mdi-file-document-outline"></i>
+                                </span>
+                            </a>
+                            <a href="{% url 'pedidos:editar_questionario' questionario.id %}" class="button is-small is-primary" title="Editar">
+                                <span class="icon tooltip">
+                                    <i class="mdi mdi-pencil"></i>
+                                </span>
+                            </a>
+                            <a class="button is-small is-primary" title="Exportar">
+                                <span class="icon tooltip">
+                                    <i class="mdi mdi-file-export"></i>
+                                </span>
+                            </a>
+                            <a href="{% url 'pedidos:excluir_questionario' questionario.id %}" class="button is-small is-danger" title="Excluir">
+                                <span class="icon tooltip">
+                                    <i class="mdi mdi-delete"></i>
+                                </span>
+                            </a>
+                            <a href="{% url 'pedidos:arquivar_questionario' questionario.id %}" class="button is-small is-primary" title="Arquivar">
+                                <span class="icon tooltip">
+                                    <i class="mdi mdi-archive"></i>
+                                </span>
+                            </a>
+                            <a href="{% url 'pedidos:publicar_questionario' questionario.id %}" class="button is-small is-primary" title="Publicar">
+                                <span class="icon tooltip">
+                                    <i class="mdi mdi-eye"></i>
+                                </span>
+                            </a>
+                            <a href="{% url 'pedidos:inativar_questionario' questionario.id %}" class="button is-small is-warning" title="Inativo">
+                                <span class="icon tooltip">
+                                    <i class="mdi mdi-power-off"></i>
+                                </span>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="notification is-warning is-light">
+            <p>Não há questionários disponíveis.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

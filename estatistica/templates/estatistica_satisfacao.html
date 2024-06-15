@@ -1,0 +1,132 @@
+{% extends 'app.html' %}
+{% load static %}
+
+{% block title %}- Estatísticas de Satisfação{% endblock title %}
+
+{% block content %}
+<div id="estatisticas-satisfacao" class="section">
+    <div class="container">
+        <h2 class="title is-uppercase has-text-centered is-size-3">
+            Estatísticas de Satisfação dos Questionários
+        </h2>
+        
+        <div class="menu-label">
+            Filtros de Estatística:
+        </div>
+        <form method="post" action="">
+            {% csrf_token %}
+            <div class="field">
+                <label class="label">Ano Letivo:</label>
+                <div class="buttons">
+                    {% for ano in anos_letivos %}
+                        <button type="submit" name="ano_letivo" value="{{ ano.id }}" class="button {% if ano.id == ano_letivo_selecionado %}is-primary{% else %}is-light{% endif %}">
+                            {{ ano.ano_letivo }}
+                        </button>
+                    {% endfor %}
+                </div>
+            </div>
+        </form>
+        
+        <div class="columns is-centered">
+            <div class="column is-three-quarters">
+                {% if not estatisticas_questionarios %}
+                    <div class="notification is-warning">
+                        <p class="is-size-5">Não há questionários disponíveis no momento.</p>
+                    </div>
+                {% else %}
+                    {% for estatisticas_questionario in estatisticas_questionarios %}
+                        {% if not estatisticas_questionario.estatisticas %}
+                            <div class="notification is-warning">
+                                <p class="is-size-5">Não há perguntas associadas ao questionário "{{ estatisticas_questionario.questionario.assunto }}".</p>
+                            </div>
+                        {% else %}
+                            <h3 class="title is-size-4">{{ estatisticas_questionario.questionario.assunto }}</h3>
+                            {% for estatistica in estatisticas_questionario.estatisticas %}
+                                {% if not estatistica.contagem_respostas %}
+                                    <div class="notification is-warning">
+                                        <p class="is-size-5">Não há respostas para a pergunta "{{ estatistica.pergunta_texto }}".</p>
+                                    </div>
+                                {% else %}
+                                    <div class="box mb-5">
+                                        <h4 class="title is-size-5">{{ estatistica.pergunta_texto }}</h4>
+                                        <div class="has-text-centered">
+                                            <canvas id="grafico-{{ estatisticas_questionario.questionario.id }}-{{ forloop.counter }}" width="200" height="200"></canvas>
+                                        </div>
+                                    </div>
+                                    <script src="{% static 'js/Chart.min.js' %}"></script>
+                                    <script>
+                                        document.addEventListener('DOMContentLoaded', function() {
+                                            var labels = [];
+                                            var data = [];
+                                            var tipo = "{{ estatistica.tipo }}";
+                                            
+                                            if (tipo === "multipla") {
+                                                var opcoes = {{ estatistica.opcoes|safe }};
+                                                var contagemRespostas = {{ estatistica.contagem_respostas|safe }};
+                                                for (var valor in contagemRespostas) {
+                                                    var indice = parseInt(valor, 10) - 1;
+                                                    labels.push(opcoes[indice]);
+                                                    data.push(contagemRespostas[valor]);
+                                                }
+                                            } else {
+                                                {% for valor, contagem in estatistica.contagem_respostas.items %}
+                                                    labels.push('{{ valor }}');
+                                                    data.push({{ contagem }});
+                                                {% endfor %}
+                                            }
+
+                                            var ctx = document.getElementById('grafico-{{ estatisticas_questionario.questionario.id }}-{{ forloop.counter }}').getContext('2d');
+                                            var myChart = new Chart(ctx, {
+                                                type: 'pie',
+                                                data: {
+                                                    labels: labels,
+                                                    datasets: [{
+                                                        label: 'Contagem de Respostas',
+                                                        data: data,
+                                                        backgroundColor: [
+                                                            'rgba(255, 99, 132, 0.2)',
+                                                            'rgba(54, 162, 235, 0.2)',
+                                                            'rgba(255, 206, 86, 0.2)',
+                                                            'rgba(75, 192, 192, 0.2)',
+                                                            'rgba(153, 102, 255, 0.2)',
+                                                            'rgba(255, 159, 64, 0.2)'
+                                                        ],
+                                                        borderColor: [
+                                                            'rgba(255, 99, 132, 1)',
+                                                            'rgba(54, 162, 235, 1)',
+                                                            'rgba(255, 206, 86, 1)',
+                                                            'rgba(75, 192, 192, 1)',
+                                                            'rgba(153, 102, 255, 1)',
+                                                            'rgba(255, 159, 64, 1)'
+                                                        ],
+                                                        borderWidth: 1
+                                                    }]
+                                                },
+                                                options: {
+                                                    responsive: true,
+                                                    maintainAspectRatio: false,
+                                                    plugins: {
+                                                        tooltip: {
+                                                            callbacks: {
+                                                                label: function(context) {
+                                                                    var label = context.label || '';
+                                                                    var value = context.raw;
+                                                                    return label + ': ' + value;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                        });
+                                    </script>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

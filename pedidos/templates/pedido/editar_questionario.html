@@ -1,0 +1,195 @@
+{% extends 'app.html' %}
+{% load static %}
+
+{% block title %} - Editar Questionário {% endblock title %}
+
+{% block content %}
+<div id="editar-questionario">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div style="padding: 1rem 2vw 0px;">
+            <hr>
+            <h2 class="title has-text-grey is-uppercase" style="font-size: 2.0rem;">
+                Editar Questionário
+            </h2>
+            {% if msg %}
+                <div style="margin-left:30%;margin-right:30%; margin-top:0%">
+                    <div style="margin-top:2%;text-align: center;position:center;">
+                        <article class="message is-danger">
+                            <div class="message-body">
+                                <p style="text-align: center;">
+                                    {{ erros }}
+                                </p>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="columns">
+                <div class="column">
+                    <div class="field">
+                        <label class="label">Nome do questionário: </label>
+                        <div class="control is-clearfix">
+                            <input type="text" id="assunto" name="assunto" value="{{ questionario.assunto }}" style="font-size: 1rem; padding: 0.5rem; border-radius: 4px; border: 1px solid #ccc; width: 100%;" required />
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Data início: </label>
+                        <div class="control is-clearfix">
+                            <input name="data_inicio" type="date" class="input" value="{{ questionario.data_inicio|date:'Y-m-d' }}">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Data limite: </label>
+                        <div class="control is-clearfix">
+                            <input name="data_limite" type="date" class="input" value="{{ questionario.data_limite|date:'Y-m-d' }}">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Ano letivo: </label>
+                        <div class="control is-clearfix">
+                            <select name="ano_letivo" class="label" style="width:100%" required>
+                                <option selected disabled hidden>Escolha o ano letivo</option>
+                                {% for ano in anos_letivos %}
+                                <option value="{{ ano.id }}" {% if ano.id == questionario.id_ano_letivo %}selected{% endif %}>{{ ano.ano_letivo }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Tema:</label>
+                        <select name="tema" class="label" style="width:100%" required>
+                            <option selected disabled hidden>Escolha o tema</option>
+                            {% for tema in temas %}
+                            <option value="{{ tema.id }}" {% if tema.id == questionario.tema_id %}selected{% endif %}>{{ tema.tema }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div id="perguntas-container">
+                {% for pergunta in questionario.perguntas.all %}
+                <div class="columns pergunta" id="pergunta_{{ forloop.counter }}">
+                    <div class="column">
+                        <div class="field">
+                            <label class="label">Pergunta {{ forloop.counter }}: </label>
+                            <select name="selected_option_{{ forloop.counter }}" class="label" style="width:100%" onchange="showInputOrSelect(this, {{ forloop.counter }})" required>
+                                <option selected disabled hidden>Escolha o tipo de pergunta</option>
+                                <option value="texto" {% if pergunta.tipo == 'texto' %}selected{% endif %}>Texto</option>
+                                <option value="multipla" {% if pergunta.tipo == 'multipla' %}selected{% endif %}>Escolha Múltipla</option>
+                            </select>
+                            <div class="inputOrSelectContainer" id="inputOrSelectContainer_{{ forloop.counter }}">
+                                <textarea name="pergunta_{{ forloop.counter }}" placeholder="Insira a pergunta {{ forloop.counter }} aqui" style="font-size: 1rem; padding: 0.5rem; border-radius: 4px; border: 1px solid #ccc; width: 100%; margin-bottom: 0.5rem;" required>{{ pergunta.texto }}</textarea>
+                                {% if pergunta.tipo == 'multipla' %}
+                                    <input type="text" name="pergunta_{{ forloop.counter }}_opcao_1" placeholder="Opção 1" value="{{ pergunta.opcao1 }}" style="font-size: 1rem; padding: 0.5rem; border-radius: 4px; border: 1px solid #ccc; width: 100%; margin-bottom: 0.5rem;">
+                                    <input type="text" name="pergunta_{{ forloop.counter }}_opcao_2" placeholder="Opção 2" value="{{ pergunta.opcao2 }}" style="font-size: 1rem; padding: 0.5rem; border-radius: 4px; border: 1px solid #ccc; width: 100%; margin-bottom: 0.5rem;">
+                                    <input type="text" name="pergunta_{{ forloop.counter }}_opcao_3" placeholder="Opção 3" value="{{ pergunta.opcao3 }}" style="font-size: 1rem; padding: 0.5rem; border-radius: 4px; border: 1px solid #ccc; width: 100%; margin-bottom: 0.5rem;">
+                                    <input type="text" name="pergunta_{{ forloop.counter }}_opcao_4" placeholder="Opção 4" value="{{ pergunta.opcao4 }}" style="font-size: 1rem; padding: 0.5rem; border-radius: 4px; border: 1px solid #ccc; width: 100%; margin-bottom: 0.5rem;">
+                                    <input type="text" name="pergunta_{{ forloop.counter }}_opcao_5" placeholder="Opção 5" value="{{ pergunta.opcao5 }}" style="font-size: 1rem; padding: 0.5rem; border-radius: 4px; border: 1px solid #ccc; width: 100%; margin-bottom: 0.5rem;">
+                                    <input type="text" name="pergunta_{{ forloop.counter }}_opcao_6" placeholder="Opção 6" value="{{ pergunta.opcao6 }}" style="font-size: 1rem; padding: 0.5rem; border-radius: 4px; border: 1px solid #ccc; width: 100%; margin-bottom: 0.5rem;">
+                                {% endif %}
+                            </div>
+                            <button type="button" class="button is-danger is-outlined" onclick="removerPergunta('pergunta_{{ forloop.counter }}')">Remover</button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div style="margin-top:8%;text-align:center;position:center;">
+                <button type="button" class="button warning is-outlined" onclick="adicionarPergunta()">Adicionar pergunta</button>
+            </div>
+            <div style="margin-top:8%;text-align:center;position:center;">
+                <button type="button" value="Voltar" class="button is-outlined" style="margin-right:5%" onclick="history.back();">Voltar</button>
+                <button type="submit" name="confirmar" value="confirmado" class="button is-success is-outlined">
+                    <span>Confirmar</span>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    var perguntaIndex = {{ questionario.perguntas.count }};
+
+    function adicionarPergunta() {
+        perguntaIndex++;
+        var perguntasContainer = document.getElementById('perguntas-container');
+
+        var novaPergunta = document.createElement('div');
+        novaPergunta.classList.add('columns', 'pergunta');
+        novaPergunta.id = `pergunta_${perguntaIndex}`;
+        novaPergunta.innerHTML = `
+        <div class="column">
+            <div class="field">
+                <label class="label">Pergunta ${perguntaIndex}: </label>
+                <select name="selected_option_${perguntaIndex}" class="label" style="width:100%" onchange="showInputOrSelect(this, ${perguntaIndex})" required>
+                    <option selected disabled hidden>Escolha o tipo de pergunta</option>
+                    <option value="texto">Texto</option>
+                    <option value="multipla">Escolha Múltipla</option>
+                </select>
+                <div class="inputOrSelectContainer" id="inputOrSelectContainer_${perguntaIndex}"></div>
+                <button type="button" class="button is-danger is-outlined" onclick="removerPergunta('pergunta_${perguntaIndex}')">Remover</button>
+            </div>
+        </div>
+        `;
+        perguntasContainer.appendChild(novaPergunta);
+    }
+
+    function showInputOrSelect(element, index) {
+        var selectedOption = element.value;
+        var container = document.getElementById(`inputOrSelectContainer_${index}`);
+        container.innerHTML = '';
+
+        var perguntaInput = document.createElement('textarea');
+        perguntaInput.name = `pergunta_${index}`;
+        perguntaInput.placeholder = `Insira a pergunta ${index} aqui`;
+        perguntaInput.style = `
+            font-size: 1rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            width: 100%;
+            margin-bottom: 0.5rem;
+        `;
+        perguntaInput.required = true;
+        container.appendChild(perguntaInput);
+
+        if (selectedOption === 'texto') {
+            return;
+        } else if (selectedOption === 'multipla') {
+            var numberOfOptions = prompt("Quantas opções deseja para esta pergunta de escolha múltipla? (Máximo de 6)");
+
+            for (var i = 1; i <= numberOfOptions; i++) {
+                var optionInput = document.createElement('input');
+                optionInput.type = 'text';
+                optionInput.name = `pergunta_${index}_opcao_${i}`;
+                optionInput.placeholder = `Opção ${i}`;
+                optionInput.style = `
+                    font-size: 1rem;
+                    padding: 0.5rem;
+                    border-radius: 4px;
+                    border: 1px solid #ccc;
+                    width: 100%;
+                    margin-bottom: 0.5rem;
+                `;
+                optionInput.required = true;
+                container.appendChild(optionInput);
+            }
+        }
+    }
+
+    function removerPergunta(id) {
+        var pergunta = document.getElementById(id);
+        pergunta.remove();
+    }
+
+    // Preenche os containers de perguntas existentes
+    window.onload = function() {
+        {% for pergunta in questionario.perguntas.all %}
+        showInputOrSelect(document.querySelector(`select[name='selected_option_{{ forloop.counter }}']`), {{ forloop.counter }});
+        {% endfor %}
+    };
+</script>
+{% endblock scripts %}

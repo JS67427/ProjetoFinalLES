@@ -1,0 +1,86 @@
+{% extends 'app.html' %}
+{% block title %}- Listar Estados{% endblock title %}
+
+{% block content %}
+<div class="columns">
+    <div class="column">
+        <h1 class="title">Listagem de Estados </h1>
+        
+        <!-- Formulário de Pesquisa e Botão para criar um novo estado -->
+        <div class="field is-grouped">
+            <form method="GET" action="{% url 'pedidos:listar_estados' %}" class="control">
+                <div class="field has-addons">
+                    <div class="control">
+                        <input class="input" type="text" name="search" placeholder="Pesquisar estados" value="{{ request.GET.search }}">
+                    </div>
+                    <div class="control">
+                        <button type="submit" class="button is-primary">
+                            Pesquisar
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <div class="control">
+                <a href="{% url 'pedidos:criar_estado' %}" class="button is-primary">
+                    <span>Adicionar Estado</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- div mensagens -->
+        <div style="text-align: center; color: red;">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="notification {{ message.tags }}" style="background-color: yellow;">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        
+        {% if estados %}
+        <table class="table is-hoverable is-fullwidth">
+            <thead>
+                <tr>
+                    <th>Estado</th>
+                    <th>Descrição</th>
+                    <th>Ações</th> <!-- Adicionado cabeçalho para a coluna de ações -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for estado in estados %}
+                <tr id="row-{{ estado.id }}">
+                    <td>{{ estado.estado }}</td>
+                    <td>{{ estado.descricao }}</td>
+                    <td> <!-- Adicionado coluna para botões de ação -->
+                        <div class="buttons">
+                            <a href="{% url 'pedidos:editar_estado' estado.id %}" class="button is-small is-primary" title="Editar">
+                                <span class="icon tooltip">
+                                    <i class="mdi mdi-pencil"></i>
+                                </span>
+                            </a>
+                            <!-- Botão para eliminar o estado -->
+                            <a href="{% url 'pedidos:eliminar_estado' estado.id %}" class="button is-small is-danger" title="Eliminar" onclick="return confirmDelete();">
+                                <span class="icon tooltip">
+                                    <i class="mdi mdi-delete"></i>
+                                </span>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="notification is-warning" style="background-color: yellow; color: red;">Nenhum estado encontrado.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmDelete() {
+        return confirm("Tem certeza que deseja eliminar este estado?");
+    }
+</script>

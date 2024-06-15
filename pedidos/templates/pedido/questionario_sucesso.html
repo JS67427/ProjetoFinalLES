@@ -1,0 +1,15 @@
+{% extends 'app.html' %}
+
+{% block title %}- Questionário Enviado{% endblock title %}
+
+{% block content %}
+<div class="container" style="margin-top: 20px;">
+    <div class="box" style="padding: 20px;">
+        <h2 class="title is-2">Questionário Enviado com Sucesso</h2>
+        <p class="subtitle is-5">Obrigado por responder ao questionário.</p>
+        <div class="buttons is-centered" style="margin-top: 20px;">
+            <a class="button is-info" href="{% url 'home' %}">Voltar à Página Inicial</a>
+        </div>
+    </div>
+</div>
+{% endblock content %}

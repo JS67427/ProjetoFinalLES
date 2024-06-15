@@ -1,0 +1,61 @@
+{% extends 'app.html' %}
+
+{% load static %}
+
+{% block title %} Informações do Docente {% endblock title %}
+
+{% block content %}
+<div class="container">
+    <h2 class="title has-text-grey is-uppercase" style="font-size: 2.0rem;">
+        Perfil do Docente
+    </h2>
+    <div class="columns">
+        <div class="column is-3">
+            <div class="menu">
+                <div class="menu-label">
+                    Dados do Docente:
+                </div>
+                <ul class="menu-list">
+                    <li>
+                        <strong>Nome:</strong> {{ docente.nome }}
+                    </li>
+                    <li>
+                        <strong>Faculdade:</strong> {{ docente.faculdade }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="column">
+            <nav aria-label="breadcrumbs" class="breadcrumb">
+                <ul>
+                    <li><a href="/">Início</a></li>
+                    <li class="is-active"><a href="#" aria-current="page">Perfil do Docente</a></li>
+                </ul>
+            </nav>
+            <table class="table is-striped is-narrow is-hoverable is-fullwidth" style="margin-top: 2rem;">
+                <thead>
+                    <tr>
+                        <th>Disciplina</th>
+                        <th>Ano Letivo</th>
+                        <th>Sala Utilizada</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for disciplina in docente.disciplinas %}
+                    <tr>
+                        <td>{{ disciplina.nome }}</td>
+                        <td>{{ disciplina.ano_letivo }}</td>
+                        <td>{{ disciplina.sala }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<!-- Scripts se necessário -->
+{% endblock scripts %}

@@ -1,0 +1,67 @@
+{% extends 'app.html' %}
+
+{% load static %}
+
+{% block title %}- Consultar Questionário{% endblock title %}
+
+{% block content %}
+<div class="container" style="margin-top: 20px;">
+    <div class="box" style="padding: 20px;">
+        <h2 class="title is-2">Consultar Questionário</h2>
+        
+        <div class="columns">
+            <div class="column">
+                <p class="subtitle is-5"><strong>Assunto:</strong> {{ questionario.assunto }}</p>
+            </div>
+            <div class="column">
+                <p class="subtitle is-5"><strong>Data Limite:</strong> {{ questionario.data_limite }}</p>
+            </div>
+            <div class="column">
+                <p class="subtitle is-5"><strong>Data de Início:</strong> {{ questionario.data_inicio|date:"d/m/Y" }}</p>
+            </div>
+            <div class="column">
+                <p class="subtitle is-5"><strong>Estado:</strong> {{ questionario.estado.estado }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="box" style="padding: 20px;">
+        {% for pergunta in questionario.perguntas.all %}
+        <div class="pergunta-resposta" style="margin-bottom: 20px;">
+            <p style="margin-bottom: 5px;"><strong>Pergunta:</strong> {{ pergunta.texto }}</p>
+            <p><strong>Tema:</strong> {{ pergunta.tema.tema }}</p> <!-- Incluindo o tema da pergunta -->
+            <p><strong>Resposta:</strong> 
+                {% if pergunta.tipo == 'texto' %}
+                    <textarea class="textarea" rows="3" style="width: 100%;" disabled></textarea>
+                {% elif pergunta.tipo == 'multipla' %}
+                    <ul>
+                        {% if pergunta.opcao1 %}
+                            <li><input type="checkbox" disabled> {{ pergunta.opcao1 }}</li>
+                        {% endif %}
+                        {% if pergunta.opcao2 %}
+                            <li><input type="checkbox" disabled> {{ pergunta.opcao2 }}</li>
+                        {% endif %}
+                        {% if pergunta.opcao3 %}
+                            <li><input type="checkbox" disabled> {{ pergunta.opcao3 }}</li>
+                        {% endif %}
+                        {% if pergunta.opcao4 %}
+                            <li><input type="checkbox" disabled> {{ pergunta.opcao4 }}</li>
+                        {% endif %}
+                        {% if pergunta.opcao5 %}
+                            <li><input type="checkbox" disabled> {{ pergunta.opcao5 }}</li>
+                        {% endif %}
+                        {% if pergunta.opcao6 %}
+                            <li><input type="checkbox" disabled> {{ pergunta.opcao6 }}</li>
+                        {% endif %}
+                    </ul>
+                {% endif %}
+            </p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="buttons is-centered" style="margin-top: 20px;">
+        <a class="button is-info" href="#" onclick="history.back();">Voltar</a>
+    </div>
+</div>
+{% endblock content %}
